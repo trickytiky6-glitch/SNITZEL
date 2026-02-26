@@ -12,6 +12,9 @@
         *{box-sizing:border-box;margin:0;padding:0;user-select:none}
         :root{--ui-green:#0f0;--hud-font:'Press Start 2P',Courier,monospace}
         html,body{height:100%;width:100%;background:#000;color:#fff;font-family:var(--hud-font);-webkit-font-smoothing:none}
+        /* ensure pixel font everywhere */
+        * { font-family: var(--hud-font) !important; }
+
         /* Screens */
         #main-menu,#game-screen,#jumpscare-screen,#win-screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none}
         #main-menu{display:flex;flex-direction:column;justify-content:center;align-items:center;background-image:url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/a8fe6d6b-0a53-4db6-a52e-caa443b57f9f.png');background-size:cover;background-position:center;position:relative;z-index:100}
@@ -56,9 +59,17 @@
         #monitor.active{top:0}
         .cam-feed{flex-grow:1;position:relative;background:#000;border:5px solid #333;margin:20px;overflow:visible}
 
-        .cam-bg{position:absolute;width:100%;height:100%;background-size:cover;background-position:center;opacity:.5;filter:grayscale(80%) sepia(20%)}
-        #bg-cam1{background:radial-gradient(circle,#2a2a35,#0a0a10)}#bg-cam2{background:radial-gradient(circle,#352a2a,#100a0a)}
-        #bg-cam3,#bg-cam4{background:linear-gradient(180deg,#111,#222,#000)}#bg-cam5{background:radial-gradient(circle,#223,#001)}#bg-cam6{background:linear-gradient(45deg,#121,#232)}
+        .cam-bg{position:absolute;width:100%;height:100%;background-size:cover;background-position:center;opacity:.9;filter:grayscale(0%)}
+        /* Camera backgrounds replaced with your images */
+        #bg-cam1{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/stage.png');}
+        #bg-cam2{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/eating.png');}
+        #bg-cam3{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/HALLWAY2.png');}
+        #bg-cam4{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/HALLWAY1.png');}
+        #bg-cam5{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/workshop.png');}
+        /* updated cam6 background as requested */
+        #bg-cam6{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/restrooms.png'); background-size: cover;}
+        /* New cam7 (upper than office). Only phantom allowed there. */
+        #bg-cam7{background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/new%20camera.png');}
 
         #cam-static{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://media.giphy.com/media/oEI9uWUicGPoY/giphy.gif');background-size:cover;opacity:0;z-index:10;pointer-events:none}
 
@@ -83,42 +94,38 @@
             image-rendering:pixelated;
         }
 
-        /* screamer overlay (short non-lethal flash) */
-        #screamer-overlay {
+        /* helper animatronic (banana) — small and clickable */
+        #helper-sprite {
             position: absolute;
-            inset: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 220;
-            background: rgba(0,0,0,0.9);
-        }
-        #screamer-overlay .s-img {
-            width: 80%;
-            max-width: 900px;
-            height: auto;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            image-rendering: pixelated;
-        }
-
-        /* phantom sprite: almost invisible */
-        #phantom-cam-sprite{
-            position:absolute;
-            bottom:0;
-            left:10%;
-            width:60%;
-            height:80%;
+            width: 64px;
+            height: 64px;
             background-size:contain;
             background-repeat:no-repeat;
-            background-position:bottom center;
+            background-position:center;
+            z-index:80;
+            pointer-events:auto;
+            display:none; /* shown only when active and the camera is open */
+            cursor: pointer;
+            image-rendering:pixelated;
+        }
+
+        /* phantom sprite: moved to right down corner and mirrored */
+        #phantom-cam-sprite{
+            position:absolute;
+            bottom:-5%;
+            right:8%;
+            width:40%;
+            height:50%;
+            background-size:contain;
+            background-repeat:no-repeat;
+            background-position:bottom right;
             z-index:55;
             pointer-events:none;
             opacity:0; /* toggled dynamically */
             transition:opacity 160ms linear, transform 180ms linear;
-            filter:contrast(.7) saturate(.6) blur(.6px);
+            filter:contrast(.9) saturate(.8) blur(.4px);
             image-rendering:pixelated;
+            transform: scaleX(-1); /* mirrored */
         }
 
         /* GOLDEN overlay (big single image jumpscare preview in monitor) */
@@ -189,13 +196,15 @@
         .cam-record{position:absolute;top:20px;right:20px;font-size:1.5rem;color:#f00;animation:blink 1s infinite;z-index:3}
         @keyframes blink{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
 
-        .cam-map-container{width:350px;position:relative;margin:20px 20px 20px 0;border:2px solid #444}
-        .map-grid{position:absolute;bottom:20px;right:20px;width:300px;height:300px;border:2px solid #fff}
-        .cam-btn{position:absolute;width:50px;height:35px;background:#333;border:2px solid #fff;color:#fff;cursor:pointer;font-family:var(--hud-font);font-size:.9rem;z-index:5}
+        .cam-map-container{width:420px;position:relative;margin:20px 20px 20px 0;border:2px solid #444}
+        .map-grid{position:absolute;bottom:20px;right:20px;width:380px;height:320px;border:2px solid #fff}
+        .cam-btn{position:absolute;width:58px;height:35px;background:#333;border:2px solid #fff;color:#fff;cursor:pointer;font-family:var(--hud-font);font-size:.78rem;z-index:5}
         .cam-btn.active{background:var(--ui-green);color:#000}
-        #btn-cam1{top:20px;left:120px}#btn-cam5{top:60px;left:20px}#btn-cam6{top:60px;right:20px}#btn-cam2{top:100px;left:120px}#btn-cam3{top:180px;left:20px}#btn-cam4{top:180px;right:20px}
+        #btn-cam1{top:10px;left:140px}#btn-cam5{top:50px;left:20px}#btn-cam6{top:50px;right:20px}#btn-cam2{top:90px;left:140px}#btn-cam3{top:170px;left:20px}#btn-cam4{top:170px;right:20px}
+        /* new cam7 button */
+        #btn-cam7{top:10px;right:140px}
 
-        .you-are-here{position:absolute;bottom:10px;left:120px;width:60px;height:40px;border:2px solid #888;color:#888;display:flex;justify-content:center;align-items:center;font-size:.8rem}
+        .you-are-here{position:absolute;bottom:10px;left:140px;width:60px;height:40px;border:2px solid #888;color:#888;display:flex;justify-content:center;align-items:center;font-size:.8rem}
 
         #sprint-warning{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:red;font-size:4rem;font-weight:bold;display:none;z-index:10;animation:blink .2s infinite;text-shadow:0 0 10px #000;pointer-events:none}
         #blackout-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;z-index:90;display:none}
@@ -273,14 +282,18 @@
                 <div class="cam-bg" id="bg-cam4" style="display:none"></div>
                 <div class="cam-bg" id="bg-cam5" style="display:none"></div>
                 <div class="cam-bg" id="bg-cam6" style="display:none"></div>
+                <div class="cam-bg" id="bg-cam7" style="display:none"></div>
 
                 <div id="monster-cam-sprite"></div>
 
                 <!-- puppet visible on cams (primarily cam6) -->
                 <div id="puppet-cam-sprite" style="background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/s-l400-removebg-preview.png')"></div>
 
-                <!-- phantom sprite element (very faint when shown) -->
+                <!-- phantom sprite element (moved & mirrored) -->
                 <div id="phantom-cam-sprite" style="background-image: url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/Magic8ball-removebg-preview.png')"></div>
+
+                <!-- helper banana (clickable) -->
+                <div id="helper-sprite" title="Click me!"></div>
 
                 <!-- golden overlay (for brief appearance inside monitor) -->
                 <div id="golden-overlay"></div>
@@ -305,14 +318,13 @@
                     <button class="cam-btn" id="btn-cam2" onclick="switchCam('cam2','DINING AREA')">CAM 2</button>
                     <button class="cam-btn" id="btn-cam3" onclick="switchCam('cam3','WEST HALL')">CAM 3</button>
                     <button class="cam-btn" id="btn-cam4" onclick="switchCam('cam4','EAST HALL')">CAM 4</button>
+                    <!-- new cam7 button -->
+                    <button class="cam-btn" id="btn-cam7" onclick="switchCam('cam7','UPPER')">CAM 7</button>
                     <div class="you-are-here">OFFICE</div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- screamer overlay (short non-lethal flash) -->
-    <div id="screamer-overlay"><div class="s-img" id="screamer-img" style="background-image:url('https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/s-l400-removebg-preview.png')"></div></div>
 
     <div id="jumpscare-screen"></div>
 
@@ -323,6 +335,10 @@
 
     <!-- phantom flash overlay (non-lethal) -->
     <div id="phantom-flash"><img id="phantom-flash-img" src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/Magic8ball-removebg-preview.png" alt="phantom"></div>
+
+    <!-- helper audio -->
+    <audio id="helper-sound-1"><source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/5260216442216814052.ogg" type="audio/ogg"></audio>
+    <audio id="helper-sound-2"><source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/5260216442216814055.ogg" type="audio/ogg"></audio>
 
     <!-- Menu music -->
     <audio id="menu-music" loop>
@@ -340,17 +356,30 @@
     <audio id="night3-sound"><source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/denis_4032387.mp3" type="audio/mpeg"></audio>
     <audio id="night4-sound"><source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/fnaf-1-night-5-call-made-with-Voicemod.mp3" type="audio/mpeg"></audio>
 
+    <!-- SAM sound (kept if needed earlier) -->
+    <audio id="sam-sound"><source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/sam.wav" type="audio/wav"></audio>
+
     <!-- Out-of-power song (play 30s when power hits 0) -->
     <audio id="out-song">
       <source src="https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/Henry_Hall_-_Here_Comes_The_Boogeyman_(SkySound.cc).mp3" type="audio/mpeg">
     </audio>
 
 <script>
-/* ====== GAME SCRIPT with Golden Freddy update and night-start sounds ====== */
+/* ====== GAME SCRIPT (small focused edits for banana respawn and sprite + cam6 bg) ====== */
+/* I only changed:
+   - HELPER_SPRITE_IMG to the banana URL you provided
+   - helper click behaviour to disappear and respawn in another camera after a short delay
+   - used the updated cam6 background in CSS (above)
+   - ensured pixel font applied globally (CSS)
+   Everything else is unchanged.
+*/
+
 const SPRITE_STANDING = "https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/WhatsApp_Image_2026-02-15_at_12.57.05__1_-removebg-preview.png";
 const SPRITE_MOVING = "https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/imgonline-com-ua-Mirror-usV53Ctud2pd1-removebg-preview.png";
 const PUPPET_SPRITE = "https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/s-l400-removebg-preview.png";
 const GOLDEN_SPRITE = "https://raw.githubusercontent.com/trickytiky6-glitch/fnaffloorandwall/main/Gemini_Generated_Image_gn5r3ggn5r3ggn5r-removebg-preview.png";
+/* <- UPDATED banana sprite URL as requested -> */
+const HELPER_SPRITE_IMG = "https://raw.githubusercontent.com/trickytiky6-glitch/SNITZEL/main/banana-removebg-preview.png";
 
 const SECONDS_PER_HOUR = 60;
 const TOTAL_HOURS = 6;
@@ -361,38 +390,26 @@ let isGameRunning=false, isBlackout=false, power=100, hour=0, secondsPassed=0, u
 let isCamUp=false, activeCam='cam1';
 let doors={left:false,right:false}, lights={left:false,right:false};
 
-let ai = {
-    active:false,
-    location:'cam1',
-    lastLocation:'cam1',
-    patience:100,
-    creepProgress:0,
-    state:'idle',
-    attackTimer:0,
-    doorWaitTimer:0,
-    cooldownTimer:0,
-    justMoved:false,
-    moveAnimStep:0,
-    attackCount:0,
-    maxAttacks:1
-};
+let ai = { active:false, location:'cam1', lastLocation:'cam1', patience:100, creepProgress:0, state:'idle', attackTimer:0, doorWaitTimer:0, cooldownTimer:0, justMoved:false, moveAnimStep:0, attackCount:0, maxAttacks:1 };
 
-// Phantom supports multiple camera locations at once
-let phantom = {
-    visible:false,        // currently active (one or two cameras)
-    locations:[],         // array of cam ids like ['cam2','cam5']
-    appearTicks:0,        // large value means effectively persistent
-    cooldown:0,           // ticks until can spawn again
-    spawnChance:0.25      // higher base chance to be more active
-};
+/* Phantom supports multiple camera locations at once */
+let phantom = { visible:false, locations:[], appearTicks:0, cooldown:0, spawnChance:0.25 };
 
 /* Wind-up system (hold) */
 let windTimerSeconds = 30;
-let windProgress = 100; // 0..100
+let windProgress = 100;
 let windExpired = false;
-let windHoldInterval = null; // interval id when holding button
+let windHoldInterval = null;
 
-/* Golden Freddy flags */
+/* Helper animatronic (banana) */
+let helper = { visible: false, cam: null, clicks: 0, appearancesLeft: 0 };
+
+/* helper scheduled timeouts */
+let helperScheduledTimeouts = [];
+
+/* intervals and audio context */
+let gameLoopInt, aiLoopInt, moveSpriteInt, phantomLoopInt, phantomMoveInt, audioCtx;
+let outSongTimeout = null;
 let goldenSpawnedThisNight = false;
 
 const elPower = document.getElementById('power-display');
@@ -408,8 +425,10 @@ const elStatic = document.getElementById('cam-static');
 const elPhantomSprite = document.getElementById('phantom-cam-sprite');
 const elPhantomFlash = document.getElementById('phantom-flash');
 const elPuppetCam = document.getElementById('puppet-cam-sprite');
-const elScreamerOverlay = document.getElementById('screamer-overlay');
-const elGoldenOverlay = document.getElementById('golden-overlay');
+const elHelper = document.getElementById('helper-sprite');
+
+const helperSound1 = document.getElementById('helper-sound-1');
+const helperSound2 = document.getElementById('helper-sound-2');
 
 const night1Sound = document.getElementById('night1-sound');
 const night2Sound = document.getElementById('night2-sound');
@@ -423,10 +442,6 @@ const elWindFill = document.getElementById('wind-fill');
 const elWindTimer = document.getElementById('wind-timer');
 const elWindBtn = document.getElementById('wind-btn');
 
-let gameLoopInt, aiLoopInt, moveSpriteInt, phantomLoopInt, phantomMoveInt, audioCtx;
-let outSongTimeout = null;
-
-// init continue button
 if (currentNight>1){
     document.getElementById('continue-btn').style.display='block';
     document.getElementById('continue-btn').innerText=`CONTINUE SHIFT (NIGHT ${currentNight})`;
@@ -443,9 +458,76 @@ function startGame(isNew){
     setTimeout(()=>{ document.getElementById('night-screen').style.display='none'; initShift(); },3000);
 }
 
-function spawnPhantomTwoCams(){
-    // Ensure cam6 is ALWAYS one of the phantom locations
+/* Schedule two helper spawns per shift as before */
+function scheduleHelperSpawns(){
+    helperScheduledTimeouts.forEach(id => clearTimeout(id));
+    helperScheduledTimeouts = [];
+    helper.appearancesLeft = 2;
+    const shiftDurationMs = SECONDS_PER_HOUR * TOTAL_HOURS * 1000;
+    for (let i=0;i<2;i++){
+        const delay = 5000 + Math.floor(Math.random() * Math.max(1000, shiftDurationMs - 10000));
+        const tid = setTimeout(()=>{ spawnHelper(); }, delay);
+        helperScheduledTimeouts.push(tid);
+    }
+}
+
+function spawnHelper(){
+    if (!isGameRunning) return;
+    if (helper.appearancesLeft <= 0) return;
     const cams = ['cam1','cam2','cam3','cam4','cam5','cam6'];
+    helper.cam = cams[Math.floor(Math.random()*cams.length)];
+    helper.visible = true;
+    helper.clicks = 0;
+    updateHelperView();
+}
+
+/* clear helper timeouts */
+function clearHelperScheduled(){
+    helperScheduledTimeouts.forEach(id=>clearTimeout(id));
+    helperScheduledTimeouts = [];
+    helper.visible = false;
+    helper.cam = null;
+    updateHelperView();
+}
+
+/* Helper click now: disappear immediately and schedule a respawn in a different camera after a short delay */
+if (elHelper){
+    elHelper.addEventListener('click',(e)=>{
+        if (!helper.visible) return;
+        helper.clicks++;
+        // always give +5% on each click (keeps previous behavior)
+        try { helperSound1.currentTime = 0; helperSound1.play().catch(()=>{}); }catch(e){}
+        power = Math.min(100, power + 5);
+        elPower.innerText = `Power left: ${Math.max(0,Math.floor(power))}%`;
+
+        // consume one appearance
+        helper.appearancesLeft = Math.max(0, helper.appearancesLeft - 1);
+
+        // hide now
+        helper.visible = false;
+        const prevCam = helper.cam;
+        helper.cam = null;
+        updateHelperView();
+
+        // schedule respawn in a *different* random camera after 8..15s if appearancesLeft > 0
+        if (helper.appearancesLeft > 0 && isGameRunning){
+            const respawnDelay = 8000 + Math.floor(Math.random() * 7000); // 8..15s
+            const tid = setTimeout(()=>{
+                if (!isGameRunning) return;
+                const cams = ['cam1','cam2','cam3','cam4','cam5','cam6'];
+                const choices = cams.filter(c => c !== prevCam);
+                helper.cam = choices[Math.floor(Math.random()*choices.length)];
+                helper.visible = true;
+                helper.clicks = 0;
+                updateHelperView();
+            }, respawnDelay);
+            helperScheduledTimeouts.push(tid);
+        }
+    });
+}
+
+function spawnPhantomTwoCams(){
+    const cams = ['cam1','cam2','cam3','cam4','cam5','cam6','cam7'];
     let otherChoices = cams.filter(c=>c !== 'cam6');
     let second = otherChoices[Math.floor(Math.random()*otherChoices.length)];
     phantom.locations = ['cam6', second];
@@ -461,7 +543,6 @@ function initShift(){
     const music = document.getElementById('bg-music'); music.volume=0.4; music.play().catch(()=>{});
     try{ const AudioContext = window.AudioContext || window.webkitAudioContext; audioCtx = new AudioContext(); }catch(e){}
 
-    // Play the requested night-start sound once for the current night
     try {
         if (currentNight === 1 && night1Sound){ night1Sound.currentTime = 0; night1Sound.play().catch(()=>{}); }
         if (currentNight === 2 && night2Sound){ night2Sound.currentTime = 0; night2Sound.play().catch(()=>{}); }
@@ -469,23 +550,23 @@ function initShift(){
         if (currentNight === 4 && night4Sound){ night4Sound.currentTime = 0; night4Sound.play().catch(()=>{}); }
     } catch(e){}
 
-    // reset wind-up
     windTimerSeconds = 30;
     windProgress = 100;
     windExpired = false;
     updateWindUI();
 
-    isGameRunning=true; isBlackout=false; power=100; hour=0; secondsPassed=0;
-    goldenSpawnedThisNight = false; // reset golden per-shift
+    clearHelperScheduled();
+    scheduleHelperSpawns();
 
-    // disable foxy system by keeping ai.maxAttacks = 0 (as before)
+    isGameRunning=true; isBlackout=false; power=100; hour=0; secondsPassed=0;
+    goldenSpawnedThisNight = false;
+
     ai = {
         active:false, location:'cam1', lastLocation:'cam1', patience:100,
         creepProgress:0, state:'idle', attackTimer:0, doorWaitTimer:0, cooldownTimer:0,
         justMoved:false, moveAnimStep:0, attackCount:0, maxAttacks:0
     };
 
-    // phantom initial settings: spawn immediately
     phantom.visible=false; phantom.locations=[]; phantom.appearTicks=0; phantom.cooldown=0;
     phantom.spawnChance = 0.30 + Math.min(0.10, currentNight * 0.02);
     spawnPhantomTwoCams();
@@ -494,6 +575,7 @@ function initShift(){
     elMonsterCam.style.opacity='0';
     elPhantomSprite.style.opacity='0';
     elPuppetCam.style.opacity='0';
+    elHelper.style.display = 'none';
     elHour.innerText = "12 AM";
     elRealTimer.innerText = `Next hour in: ${SECONDS_PER_HOUR}s`;
 
@@ -514,19 +596,9 @@ function initShift(){
     calculateUsage();
 }
 
-function updateWindUI(){
-    const pct = Math.max(0, Math.min(100, windProgress));
-    if (elWindFill) elWindFill.style.width = pct + '%';
-    if (elWindTimer) elWindTimer.innerText = (windExpired ? '0s' : windTimerSeconds + 's');
-    if (elWindContainer) {
-        elWindContainer.style.display = (isCamUp && activeCam === 'cam6' && currentNight >= 2) ? 'flex' : 'none';
-    }
-}
-
 function gameLoop(){
     if (!isGameRunning) return;
 
-    // wind depletion every second if not expired
     if (!windExpired && currentNight >= 2) {
         windTimerSeconds--;
         if (windTimerSeconds < 0) windTimerSeconds = 0;
@@ -552,7 +624,6 @@ function gameLoop(){
         if (hour >= TOTAL_HOURS) { winGame(); return; }
     }
 
-    // NEW: Golden Freddy spawn logic - only at 3 AM on nights >= 3, once per night
     if (currentNight >= 3 && hour === 3 && !goldenSpawnedThisNight){
         goldenSpawnedThisNight = true;
         goldenSpawnOffice();
@@ -673,11 +744,13 @@ function switchCam(camId,name){
     document.querySelectorAll('.cam-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById(`btn-${camId}`).classList.add('active');
     document.querySelectorAll('.cam-bg').forEach(bg=>bg.style.display='none');
-    document.getElementById(`bg-${camId}`).style.display='block';
+    const bg = document.getElementById(`bg-${camId}`);
+    if (bg) bg.style.display = 'block';
     elStatic.style.opacity = 0.5; setTimeout(()=>{ elStatic.style.opacity=0 },100);
     playSound(600,'sine',0.05);
     updateCameraView();
     updateWindUI();
+    updateHelperView();
 }
 
 function aiLoop(){
@@ -745,7 +818,7 @@ function blockAnimatronic(side){
     updateCameraView();
 }
 
-/* PHANTOM */
+/* phantom */
 function phantomLoop(){
     if (phantom.cooldown > 0){ phantom.cooldown--; }
 
@@ -763,14 +836,11 @@ function phantomLoop(){
 
 function updatePhantomView(){
     if (phantom.visible && isCamUp && phantom.locations.includes(activeCam)){
-        elPhantomSprite.style.opacity = 0.18;
-        elPhantomSprite.style.transform = `translateX(${(Math.random()-0.5)*6}px) translateY(${(Math.random()-0.5)*4}px)`;
-    } else if (phantom.visible && isCamUp) {
-        elPhantomSprite.style.opacity = 0;
-        elPhantomSprite.style.transform = 'none';
+        elPhantomSprite.style.opacity = 0.22;
+        elPhantomSprite.style.transform = `scaleX(-1) translateX(${(Math.random()-0.5)*6}px) translateY(${(Math.random()-0.5)*3}px)`;
     } else {
         elPhantomSprite.style.opacity = 0;
-        elPhantomSprite.style.transform = 'none';
+        elPhantomSprite.style.transform = 'scaleX(-1) translateX(0px) translateY(0px)';
     }
 }
 
@@ -803,10 +873,25 @@ function handlePhantomCloseWhileViewing(){
 /* visuals helpers */
 function clearAnimClasses(el){ el.classList.remove('anim-slide-down','anim-slide-right','anim-slide-left','anim-slide-out','sprint-pos'); }
 
+function updateHelperView(){
+    if (!elHelper) return;
+    if (helper.visible && isCamUp && helper.cam === activeCam && helper.appearancesLeft > 0){
+        elHelper.style.display = 'block';
+        elHelper.style.backgroundImage = `url('${HELPER_SPRITE_IMG}')`;
+        const leftPct = 60 + Math.floor(Math.random()*20);
+        const bottomPct = 10 + Math.floor(Math.random()*20);
+        elHelper.style.left = leftPct + '%';
+        elHelper.style.bottom = bottomPct + '%';
+        elHelper.style.transform = 'translate(-50%, 0) scale(0.65)';
+    } else {
+        elHelper.style.display = 'none';
+    }
+}
+
 function updateCameraView(){
     updatePhantomView();
 
-    if (!isCamUp){ elMonsterCam.style.opacity='0'; elPhantomSprite.style.opacity='0'; elPuppetCam.style.opacity='0'; elGoldenOverlay.style.display='none'; return; }
+    if (!isCamUp){ elMonsterCam.style.opacity='0'; elPhantomSprite.style.opacity='0'; elPuppetCam.style.opacity='0'; document.getElementById('golden-overlay').style.display='none'; updateHelperView(); return; }
 
     let isVisible = (ai.location === activeCam);
     clearAnimClasses(elMonsterCam);
@@ -866,31 +951,24 @@ function updateCameraView(){
     } else if (elMonsterCam) {
         elMonsterCam.style.bottom = '-5%';
     }
+
+    updateHelperView();
 }
 
-/* Golden Freddy: spawn in OFFICE at 3 AM on nights >=3 (once per night).
-   - If monitor is CLOSED when he spawns -> immediate jumpscare (kill)
-   - If monitor is OPEN when he spawns -> show a big golden overlay briefly in the monitor (no kill)
-*/
 function goldenSpawnOffice(){
-    // spawn attempt
     if (!isGameRunning) return;
-
     if (!isCamUp){
-        // player isn't looking at monitors -> immediate death
         triggerJumpscare('golden');
         return;
     }
-
-    // if monitor is open -> show overlay briefly (appearance in office but player saw him)
-    if (elGoldenOverlay){
-        elGoldenOverlay.style.backgroundImage = `url('${GOLDEN_SPRITE}')`;
-        elGoldenOverlay.style.display = 'block';
-        setTimeout(()=>{ if (elGoldenOverlay) elGoldenOverlay.style.display = 'none'; }, 1800);
+    const elGolden = document.getElementById('golden-overlay');
+    if (elGolden){
+        elGolden.style.backgroundImage = `url('${GOLDEN_SPRITE}')`;
+        elGolden.style.display = 'block';
+        setTimeout(()=>{ if (elGolden) elGolden.style.display = 'none'; }, 1800);
     }
 }
 
-/* blackout -> play out-song for exactly 30s louder, then jumpscare */
 function triggerBlackout(){
     if (isBlackout) return;
     isBlackout = true;
@@ -917,7 +995,7 @@ function triggerJumpscare(killerType){
     isGameRunning=false;
     clearInterval(gameLoopInt); clearInterval(aiLoopInt); clearInterval(moveSpriteInt); clearInterval(phantomLoopInt);
     if (phantomMoveInt) { clearInterval(phantomMoveInt); phantomMoveInt = null; }
-    // stop outSong if it's playing
+    helperScheduledTimeouts.forEach(id=>clearTimeout(id)); helperScheduledTimeouts=[];
     try { outSong.pause(); outSong.currentTime = 0; if (outSongTimeout) clearTimeout(outSongTimeout); } catch(e){}
     const jsScreen = document.getElementById('jumpscare-screen'); jsScreen.style.display='block';
     generateJumpscareSound();
@@ -948,12 +1026,12 @@ function winGame(){
     if (phantomMoveInt) { clearInterval(phantomMoveInt); phantomMoveInt = null; }
     document.getElementById('bg-music').pause();
     playSound(400,'sine',1.0,3);
+    helperScheduledTimeouts.forEach(id=>clearTimeout(id)); helperScheduledTimeouts=[];
     if (currentNight < 5){ currentNight++; localStorage.setItem('fnaf_night', currentNight); }
     document.getElementById('game-screen').style.display='none';
     document.getElementById('win-screen').style.display='flex';
 }
 
-/* audio helpers */
 function playSound(freq,type,vol,duration=0.1){
     if (!audioCtx) return;
     const osc = audioCtx.createOscillator();
@@ -977,7 +1055,7 @@ function generateJumpscareSound(){
     }
 }
 
-/* wind button behavior (hold-to-wind) */
+/* wind hold */
 if (elWindBtn) {
     function startWindHold(){
         if (!(isCamUp && activeCam === 'cam6')) return;
@@ -1008,6 +1086,17 @@ if (elWindBtn) {
     window.addEventListener('touchend', stopWindHold);
     window.addEventListener('mouseleave', stopWindHold);
 }
+
+function updateWindUI(){
+    const pct = Math.max(0, Math.min(100, windProgress));
+    if (elWindFill) elWindFill.style.width = pct + '%';
+    if (elWindTimer) elWindTimer.innerText = (windExpired ? '0s' : windTimerSeconds + 's');
+    if (elWindContainer) {
+        elWindContainer.style.display = (isCamUp && activeCam === 'cam6' && currentNight >= 2) ? 'flex' : 'none';
+    }
+}
+
+window.addEventListener('beforeunload', ()=>{ helperScheduledTimeouts.forEach(id=>clearTimeout(id)); });
 
 updateWindUI();
 </script>
